@@ -1,0 +1,2083 @@
+program MyGeiger_NT
+
+#ifndef __built_in_h
+#define __built_in_h
+
+'--- 8-bit
+#define Lo(param) ((char *)&param)[0]
+#define Hi(param) ((char *)&param)[1]                     '
+#define Higher(param) ((char *)&param)[2]
+#define Highest(param) ((char *)&param)[3]
+
+#define lo(param) ((char *)&param)[0]
+#define hi(param) ((char *)&param)[1]
+#define higher(param) ((char *)&param)[2]
+#define highest(param) ((char *)&param)[3]
+
+
+'--- 16-bit
+#define LoWord(param) ((unsigned *)&param)[0]
+#define HiWord(param) ((unsigned *)&param)[1]
+
+#define loword(param) ((unsigned *)&param)[0]
+#define hiword(param) ((unsigned *)&param)[1]
+
+#endif '__built_in_h
+
+'-------------------------------GRAPH HIGH-------------------------------------'
+const D_HIGH as byte = 16
+
+'-------------------------------FONTS AND GRAPHICS-----------------------------'
+const rh_logo as byte[1024] = (
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 128, 192,  64,  96,  96, 112,  48,  48,  56,  56,  56,  60,  60,  60,  60,  62,  62,  62,  62,  62,  62,  62,  62, 126, 126, 126, 126, 254, 254, 254, 254, 254, 254, 254, 252, 252, 252, 252, 248, 248, 248, 240, 240, 240, 224, 224, 192, 192, 128, 128,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   1, 129, 128, 192, 192, 192, 224, 224, 224, 224, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 224, 224, 224, 224, 192, 192, 192, 128, 128,   1,   1,   3,   3,   7,   7,  15,  31,  31,  63, 127, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 254, 252, 248, 240, 224, 192, 128,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 128,  64,  32,  48,  24,   8,  12,   6,   6, 131, 131, 195, 193, 193, 225, 224,  96,  96,  96, 112, 112, 240, 240, 240, 224, 224, 224, 224, 224, 225, 193, 193, 129, 131, 131,   7,   7,  15,  15,  31,  63, 127, 127, 255, 254, 254, 252, 248, 248, 240, 224, 192, 128,   0,   1,   1,   3,   7,  31,  63, 127, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 252, 248, 224, 192,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 224, 224, 224, 224, 224, 226,  97,  96,  96,  96, 112, 104, 100, 102, 226, 193, 193,   1,   0, 224, 224, 224, 224, 224, 224, 224,   0,   0,   0,   0,   0,   0,   0,   1, 225, 227, 227,   7,   7,  15,  31,  63, 127, 254, 254, 252, 248, 240, 224, 192, 128,   1,   3,  15,  31,  63, 255, 255, 255, 255, 255, 254, 248, 240, 192,   0,   0,   0,   1,   3,  15,  63, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252, 240, 192,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   8,   8,  12,  12,  12,  28,  28,  28, 255, 255, 243,   0,   0, 255, 255, 255, 255, 255, 255, 255,   8,  28,  28,  28,  28,  28,  28,  28, 255, 255, 255,   0,   0,   0,   0,   0,   0,   0,   1,   7,  15, 127, 255, 255, 255, 254, 248, 224,   0,   0,   0,   3,  31, 255, 255, 255, 255, 255, 255, 255, 252, 192,   0,   0,   0,   0,   0,  15, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 224,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   3,   3,   7,   7,   7,   7,   0,   0,   0,   0,   0,   0,   0,   0,   7,   7,   7,   0,   0,   0,   3,   3,   7,   7,   7,   7,   0,   0,   0,   0,   0,   0,   0,   0,   7,   7,   7,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  15,  63,  63,  63,  63,  63,  63,   0,   0,   0,   0,   3,  63,  63,  63,  63,  63,  63,  63,  63,  32,   0,   0,   0,   0,   0,   1,  63,  63,  63,  63,  63,  63,  63,  63,  63,  63,  63,  63,  63,  63,  63,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 126, 254, 254, 146, 146, 146, 146, 128,   0, 126, 254, 252, 128, 128, 128, 128, 128,   0, 126, 254, 214, 146, 146, 146, 146,   0,  56, 124, 252, 198, 134, 130, 130, 130, 130,   0,   2,   2, 126, 254, 254,   2,   2,   0,   0, 254, 254,  22,  18,  18,  18, 252,   0,  56, 124, 252, 198, 130, 130, 130,  68, 120,   0, 254,  14,  28,  60, 120, 112, 224, 252,   0,   0, 254, 254,   0,  56, 124, 252, 198, 130, 130, 130, 130, 128, 140, 156, 158, 150, 146, 146, 242, 242,  98,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0
+)
+
+'----------------------low bat screen------------------------------------------'
+const lowbat as byte[1024] = (
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 224, 160,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32,  32, 224,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 255, 255, 252, 240, 128,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 192, 240, 248, 124, 248, 240, 192,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 255,   8,   8,   8, 248,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 252, 224,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 128, 224, 240, 252,  63,  15,   7, 241, 240, 241,   3,  15,  63, 252, 248, 224, 128,   0,   0,   0,   0,   0,   0,   0,   0, 255,   0,   0,   0, 255,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 127, 127, 127, 127, 127, 127, 127, 127, 124,  96,  64,  64,  64,  64,  64,  64,  64,  64,  64,  64,  64,  64,  64,  64,  64,  64,  64,  64, 192, 224, 248, 254,  63,  15,   3,   0,   0,   0,   0, 127, 127, 127,   0,   0,   0,   0,   3,  15,  63, 254, 248, 224, 192,  64,  64,  64,  64, 127,   1,   1,   1,   1,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 192, 240, 252, 254, 223, 199, 193, 192, 192, 192, 192, 192, 192, 192, 192, 207, 207, 207, 192, 192, 192, 192, 192, 192, 192, 192, 193, 199, 223, 254, 252, 240, 192,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 128, 128, 128,   0,   0,   0,   0,   0,   0, 128, 128, 128, 128,   0,   0,   0, 128, 128, 128,   0, 128, 128, 128,   0, 128, 128, 128,   0,   0,   0, 128, 128, 128, 128, 128,   0,   0,   1,   1,   1,   1, 129,   1,   1,   1,   1,   1, 129, 129, 129, 129, 129, 129, 129,   1, 129, 129, 129, 129, 129, 129, 129,   1, 129, 129, 129, 129, 129, 128,   0, 128, 128, 128, 128, 128,   0,   0,   0, 128, 128, 128,   0,   0, 128, 128, 128,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 128, 255, 128, 128, 128, 128,  64,  62,  65, 128, 128, 128, 128,  65,  62,   0,   0,   7,  56, 224,  24,   7,  56, 224,  28,   3,   0,   0,   0,   0, 128, 255, 136, 136, 136, 143, 112,   0, 128, 224, 158,  17,  22, 152, 224, 128,   0,   1,   0, 128, 255, 128,   0,   1,   0,   1,   0, 128, 255, 128,   0,   1,   0, 128, 255, 136, 136, 156, 129,  64, 128, 255, 136,   8,  56,  71, 128, 128,   0,   1, 142, 240, 140,   2,   1,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0
+)
+
+'-----------------------demo end-----------------------------------------------'
+'const demo as byte[1024] = (
+'  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+'  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   2,   2, 254,   2,   2,   2,   2,   2,   6,  12, 252, 240,   0,   2,   2, 254,  66,  66,  66,  66,  66,   2,   4,   0,   2,   2, 254,  14, 120, 224, 128,   0,   0,   0,  64,  24,  14, 254,   2,   2,   0, 240, 248,  12,   4,   2,   2,   2,   2,   6,  12, 248, 240,   0,   0,   0,   0,   0,   0,   2,   2, 254,  66,  66,  66,  66,  66,   2,   4,   2,   2,   6, 254,  28,  56,  96, 192, 128,   0,   2, 254,   2,   2,   2,   2, 254,   2,   2,   2,   2,   2,   6,  12, 252, 240,   0,   0,   0,  62,  62,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+'  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  16,  16,  31,  16,  16,  16,  16,  16,  24,  12,   7,   3,   0,  16,  16,  31,  16,  16,  16,  16,  16,  16,  24,   0,  16,  16,  31,  16,   0,   1,   7,  30,  12,   1,   0,  16,  16,  31,  16,  16,   0,   3,   7,  12,  24,  16,  16,  16,  16,   8,  12,   7,   3,   0,   0,   0,   0,   0,   0,  16,  16,  31,  16,  16,  16,  16,  16,  16,  24,   0,  16,  16,  31,  16,   0,   0,   0,   1,   3,  14,  31,   0,   0,  16,  16,  31,  16,  16,  16,  16,  16,  24,  12,   7,   3,   0,   0,   0,  24,  24,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+'  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+'  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  32, 240,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  32, 240,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 192,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  48,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 192,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+'  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  66, 127,  66,   1,   1,  64, 127,  66,   1,  65, 127,  64,   0,  62, 101,  69,  69,  70,   0,  64, 127,  64,   0,  62, 101,  69,  69,  70,   0,   0,  62,  97,  65,  65,  67,   0,   1, 127,  65,  65,  66, 127,  66,   1,   1,   0,  62,  97,  65,  65,  67,  62,   0,  66, 127,  66,   1,  65, 127,  64,  66, 127,  64,   0,  62,  97,  65,  65,  67,   0,   0,  70,  77,  73, 121,   0,   0,  64,  64,   0,  66, 127,  66,   1,  65, 127,  64,   0,  62, 101,  69,  69,  70,   0,   1, 127,  65,  65,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+'  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+'  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0
+')
+
+
+
+const cpm_label as byte[20] =
+  ( $78, $48, $48, $48, $00,       'C
+    $78, $28, $28, $10, $00,       'P
+    $78, $08, $10, $08, $78,       'M
+    $00, $00, $48, $00, $00)       ':
+
+const uSv_label as byte [20] =
+
+  ( $48, $54, $54, $54, $24,        'S
+    $00, $38, $40, $38, $00,        'v
+    $40, $20, $10, $08, $00,        '/
+    $78, $10, $10, $60, $00)        'h
+
+const uRn_label as byte [20] =
+
+  ( $78, $28, $28, $28, $50, $00,        'r
+    $78, $10, $08, $08, $70, $00,        'n
+    $20, $10, $00,                       '/
+    $78, $10, $10, $60, $00)             'h
+
+'const calib_label as byte [23] =
+'  ( 0x08, 0x08, 0x3E, 0x08, 0x08, 0x00,       '+
+'    0x10, 0x10, 0x10, 0x10, 0x10, 0x00,       '-
+'    0x3E, 0x41, 0x41, 0x41, 0x3E, 0x00,       'O
+'    0x7F, 0x08, 0x14, 0x22, 0x41)             'K
+'
+'const bqtoserial as byte [55] =         'Bq to serial?
+'  ( $7C, $54, $54, $54, $28, $00,           'b
+'    $10, $28, $28, $28, $78, $00,           'q
+'    $00, $00, $08, $08, $78, $08, $08, $00,      't
+'    $30, $48, $48, $48, $30, $00, $00, $00,      'o
+'    $38, $40, $40, $40, $38, $00,           'u
+'    $70, $28, $28, $28, $70, $00,           'a
+'    $78, $28, $28, $28, $50, $00,           'r
+'    $08, $08, $78, $08, $08, $00,           't
+'    $04, $54, $08)                          '?
+
+
+const message1 as byte[35] =                       ' normal
+   ( $78, $10, $08, $08, $70, $00,
+     $30, $48, $48, $48, $30, $00,
+     $78, $28, $28, $28, $50, $00,
+     $78, $08, $10, $08, $78, $00,
+     $70, $28, $28, $28, $70, $00,
+     $78, $40, $40, $40, $00)
+const message2 as byte[35] =                       ' alarm
+   ( $70, $28, $28, $28, $70, $00,
+     $78, $40, $40, $40, $00, $00,
+     $70, $28, $28, $28, $70, $00,
+     $78, $28, $28, $28, $50, $00,
+     $78, $08, $10, $08, $78, $00,
+     $00, $00, $00, $00, $00)
+
+'const message3 as byte[23] =                       ' prob
+'   ( $78, $28, $28, $28, $10, $00,                 ' p
+'     $78, $28, $28, $28, $50, $00,                 ' r
+'     $30, $48, $48, $48, $30, $00,                 ' o
+'     $7C, $54, $54, $54, $28)                      ' B
+   
+   
+'const bg_message as byte[16] =
+'   ($7C, $54, $54, $54, $38, $00, $38, $44, $44, $44, $60, $00, $28, $28, $28, $28) 'BG=
+'
+'const sq_message as byte[16] =
+'   ($48, $54, $54, $54, $24, $00, $10, $28, $28, $28, $78, $00, $28, $28, $28, $28) 'SQ=
+'
+'const cf_message as byte[16] =
+'   ($38, $44, $44, $44, $44, $00, $7C, $14, $14, $14, $14, $00, $28, $28, $28, $28) 'CF=
+'
+'const dt_message as byte[16] =
+'   ($7C, $44, $44, $44, $38, $00, $08, $08, $78, $08, $08, $00, $28, $28, $28, $28) 'DT=
+'
+'const yn_message as byte[42] =
+'   ($04, $08, $70, $08, $04, $00, $7C, $54, $54, $44, $44, $00, $5C, $54, $54, $54, $74, $00, $10, $10, $7C, $10, $10,    'YES+ NO-
+'    $00, $00, $7C, $08, $10, $20, $7C, $00, $38, $44, $44, $44, $38, $00, $10, $10, $10, $10, $10)
+
+const exprobe as byte[15] =
+   ($00, $20, $70, $F8, $20, $28, $28, $28, $28, $28, $08, $3E, $1C, $08)     'probe plug symbol
+
+const table as byte[480] = (
+0x00,0x00,0x00,0x00,0x00, ' 20 space ASCII table for NOKIA LCD: 96 rows * 5 bytes= 480 bytes
+0x00,0x00,0x5f,0x00,0x00, ' 21 !
+0x00,0x07,0x00,0x07,0x00, ' 22 "
+$42, $42, $42, $7E, $18,  ' 23 # BATT RIGHT LOW
+$7E, $42, $5A, $42, $42,  ' 24 $ BATT LEFT LOW
+'------------------------------------
+'0x14,0x7f,0x14,0x7f,0x14, ' 23 #
+'0x24,0x2a,0x7f,0x2a,0x12, ' 24 $
+'------------------------------------
+$42, $5A, $42, $7E, $18,   ' 25 % BATT RIGH FULL
+'------------------------------------
+'0x23,0x13,0x08,0x64,0x62, ' 25 %
+'------------------------------------
+0x36,0x49,0x55,0x22,0x50, ' 26 &
+0x00,0x05,0x03,0x00,0x00, ' 27 '
+0x00,0x1c,0x22,0x41,0x00, ' 28 (
+0x00,0x41,0x22,0x1c,0x00, '// 29 )
+0x14,0x08,0x3e,0x08,0x14, '// 2a *
+0x08,0x08,0x3e,0x08,0x08, '// 2b +
+0x00,0x50,0x30,0x00,0x00, '// 2c ,
+$7E, $42, $5A, $42, $5A,  ' 2d - BATT LEFT FULL
+'------------------------------------
+'0x08,0x08,0x08,0x08,0x08, '// 2d -
+'------------------------------------
+0x00,0x60,0x60,0x00,0x00, '// 2e .
+0x20,0x10,0x08,0x04,0x02, '// 2f /
+0x3e,0x51,0x49,0x45,0x3e, '// 30 0
+0x00,0x42,0x7f,0x40,0x00, '// 31 1
+0x42,0x61,0x51,0x49,0x46, '// 32 2
+0x21,0x41,0x45,0x4b,0x31, '// 33 3
+0x18,0x14,0x12,0x7f,0x10, '// 34 4
+0x27,0x45,0x45,0x45,0x39, '// 35 5
+0x3c,0x4a,0x49,0x49,0x30, '// 36 6
+0x01,0x71,0x09,0x05,0x03, '// 37 7
+0x36,0x49,0x49,0x49,0x36, '// 38 8
+0x06,0x49,0x49,0x29,0x1e, '// 39 9
+0x00,0x36,0x36,0x00,0x00, '// 3a :
+$FF, $40, $40, $20, $7C , ' 3b  Mu for uSv/h  ";"
+'-------------------------------------
+'0x00,0x56,0x36,0x00,0x00, '// 3b ;
+'-------------------------------------
+0x08,0x14,0x22,0x41,0x00, '// 3c <
+0x14,0x14,0x14,0x14,0x14, '// 3d =
+0x00,0x41,0x22,0x14,0x08, '// 3e >
+0x02,0x01,0x51,0x09,0x06, '// 3f ?
+0x32,0x49,0x79,0x41,0x3e, '// 40 @
+0x7e,0x11,0x11,0x11,0x7e, '// 41 A
+0x7f,0x49,0x49,0x49,0x36, '// 42 B
+0x3e,0x41,0x41,0x41,0x22, '// 43 C
+0x7f,0x41,0x41,0x22,0x1c, '// 44 D
+0x7f,0x49,0x49,0x49,0x41, '// 45 E
+0x7f,0x09,0x09,0x09,0x01, '// 46 F
+0x3e,0x41,0x49,0x49,0x7a, '// 47 G
+0x7f,0x08,0x08,0x08,0x7f, '// 48 H
+0x00,0x41,0x7f,0x41,0x00, '// 49 I
+0x20,0x40,0x41,0x3f,0x01, '// 4a J
+0x7f,0x08,0x14,0x22,0x41, '// 4b K
+0x7f,0x40,0x40,0x40,0x40, '// 4c L
+0x7f,0x02,0x0c,0x02,0x7f, '// 4d M
+0x7f,0x04,0x08,0x10,0x7f, '// 4e N
+0x3e,0x41,0x41,0x41,0x3e, '// 4f O
+0x7f,0x09,0x09,0x09,0x06, '// 50 P
+0x3e,0x41,0x51,0x21,0x5e, '// 51 Q
+0x7f,0x09,0x19,0x29,0x46, '// 52 R
+0x46,0x49,0x49,0x49,0x31, '// 53 S
+0x01,0x01,0x7f,0x01,0x01, '// 54 T
+0x3f,0x40,0x40,0x40,0x3f, '// 55 U
+0x1f,0x20,0x40,0x20,0x1f, '// 56 V
+0x3f,0x40,0x38,0x40,0x3f, '// 57 W
+0x63,0x14,0x08,0x14,0x63, '// 58 X
+0x07,0x08,0x70,0x08,0x07, '// 59 Y
+0x61,0x51,0x49,0x45,0x43, '// 5a Z
+0x00,0x7f,0x41,0x41,0x00, '// 5b [
+0x02,0x04,0x08,0x10,0x20, '// 5c Yen Currency Sign
+0x00,0x41,0x41,0x7f,0x00, '// 5d ]
+0x04,0x02,0x01,0x02,0x04, '// 5e ^
+0x40,0x40,0x40,0x40,0x40, '// 5f _
+0x00,0x01,0x02,0x04,0x00, '// 60 `
+0x20,0x54,0x54,0x54,0x78, '// 61 a
+0x7f,0x48,0x44,0x44,0x38, '// 62 b
+0x38,0x44,0x44,0x44,0x20, '// 63 c
+0x38,0x44,0x44,0x48,0x7f, '// 64 d
+0x38,0x54,0x54,0x54,0x18, '// 65 e
+0x08,0x7e,0x09,0x01,0x02, '// 66 f
+0x0c,0x52,0x52,0x52,0x3e, '// 67 g
+0x7f,0x08,0x04,0x04,0x78, '// 68 h
+0x00,0x44,0x7d,0x40,0x00, '// 69 i
+0x20,0x40,0x44,0x3d,0x00, '// 6a j
+0x7f,0x10,0x28,0x44,0x00, '// 6b k
+0x00,0x41,0x7f,0x40,0x00, '// 6c l
+0x7c,0x04,0x18,0x04,0x78, '// 6d m
+0x7c,0x08,0x04,0x04,0x78, '// 6e n
+0x38,0x44,0x44,0x44,0x38, '// 6f o
+0x7c,0x14,0x14,0x14,0x08, '// 70 p
+0x08,0x14,0x14,0x18,0x7c, '// 71 q
+0x7c,0x08,0x04,0x04,0x08, '// 72 r
+0x48,0x54,0x54,0x54,0x20, '// 73 s
+0x04,0x3f,0x44,0x40,0x20, '// 74 t
+0x3c,0x40,0x40,0x20,0x7c, '// 75 u
+0x1c,0x20,0x40,0x20,0x1c, '// 76 v
+0x3c,0x40,0x30,0x40,0x3c, '// 77 w
+0x44,0x28,0x10,0x28,0x44, '// 78 x
+0x0c,0x50,0x50,0x50,0x3c, '// 79 y
+0x44,0x64,0x54,0x4c,0x44, '// 7a z
+0x00,0x08,0x36,0x41,0x00, '// 7b <
+0x00,0x00,0x7f,0x00,0x00, ' 7c |
+0x00,0x41,0x36,0x08,0x00, ' 7d >
+0x10,0x08,0x08,0x10,0x08, ' 7e Right Arrow ->
+0x78,0x46,0x41,0x46,0x78) ' 7f Left Arrow <-
+
+' Modified font to safe memory space
+const fontlookup1 as byte[130] =
+   (0x00, 0x00, 0x00, 0x00, 0x00 ,         ' sp
+    $00, $38, $40, $38, $00,               ' !  "V"
+    0x7E, 0x41, 0x41, 0x41, 0x7E ,         ' " not used:(
+    $42, $42, $42, $7E, $18,               ' # BATT RIGHT LOW
+    $7E, $42, $5A, $42, $42,               ' $ BATT LEFT LOW
+    0x7E, 0x71, 0x71, 0x71, 0x7E ,         ' % BATT 50%
+    0x7e, 0x7F, 0x7F, 0x7F, 0x7e ,         ' & BATT 100%
+    0x7e, 0x79, 0x79, 0x79, 0x7e ,         ' ' BATT 75%
+    0xC0, 0xE0, 0x7F, 0x02, 0x1C ,         ' ( SOUND ON SYMBOL
+    0x00, 0x70, 0x70, 0x70, 0x00 ,         ' ) POINT BIG
+    0x14, 0x08, 0x3E, 0x08, 0x14 ,         ' *
+    $78, $08, $10, $08, $78,               ' + "m" for milli siverts
+    $FF, $40, $40, $20, $7C ,              ' Mu for uSv/h     ","
+    $7E, $42, $5A, $42, $5A,               ' - BATT LEFT FULL
+    $42, $5A, $42, $7E, $18,               ' . BATT RIGH FULL
+    $00, $00, $40, $00, $00,               ' / SMALL POINT
+    $00, $7C, $44, $7C, $00,               ' Code for char 0
+    $00, $44, $7C, $40, $00,               ' Code for char 1
+    $00, $74, $54, $5C, $00,               ' Code for char 2
+    $00, $44, $54, $7C, $00,               ' Code for char 3
+    $00, $30, $28, $7C, $00,               ' Code for char 4
+    $00, $5C, $54, $74, $00,               ' Code for char 5
+    $00, $7C, $54, $74, $00,               ' Code for char 6
+    $00, $04, $04, $7C, $00,               ' Code for char 7
+    $00, $7C, $54, $7C, $00,               ' Code for char 8
+    $00, $1C, $14, $7C, $00)               ' Code for char 9
+
+const plug as byte[16] =
+     ($1C, $08, $08, $08, $0C, $0A, $0A, $1B, $2B, $48, $C8, $C8, $08, $3E, $1C, $08)  ' Code for usb plug symbol
+     
+'' Big font array for dose
+'const Zero as byte [24] = (
+'    0x00, 0xfc, 0x7a, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x7a, 0xfc, 0x00, 0x00, 0x7e, 0xbc, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xbc, 0x7e, 0x00)   ' 0
+'const One as byte [24] = (
+'    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x78, 0xfc, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3c, 0x7e, 0x00)   ' 1
+'const Two as byte [24] = (
+'    0x00, 0x00, 0x02, 0x86, 0x86, 0x86, 0x86, 0x86, 0x86, 0x7a, 0xfc, 0x00, 0x00, 0x7e, 0xbd, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0x81, 0x00, 0x00)   ' 2
+'const Thre as byte [24] = (
+'    0x00, 0x00, 0x02, 0x86, 0x86, 0x86, 0x86, 0x86, 0x86, 0x7a, 0xfc, 0x00, 0x00, 0x00, 0x81, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xbd, 0x7e, 0x00)   ' 3
+'const Four as byte [24] = (
+'    0x00, 0xfc, 0x78, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x78, 0xfc, 0x00, 0x00, 0x00, 0x01, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x3d, 0x7e, 0x00)   ' 4
+'const Five as byte [24] = (
+'    0x00, 0xfc, 0x7a, 0x86, 0x86, 0x86, 0x86, 0x86, 0x86, 0x02, 0x00, 0x00, 0x00, 0x00, 0x81, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xbd, 0x7e, 0x00)   ' 5
+'const Six as byte [24] = (
+'    0x00, 0xfc, 0x7a, 0x86, 0x86, 0x86, 0x86, 0x86, 0x86, 0x02, 0x00, 0x00, 0x00, 0x7e, 0xbd, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xbd, 0x7e, 0x00)   ' 6
+'const Seven as byte [24] = (
+'    0x00, 0x00, 0x02, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x7a, 0xfc, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3c, 0x7e, 0x00)   ' 7
+'const Eight as byte [24] = (
+'    0x00, 0xfc, 0x7a, 0x86, 0x86, 0x86, 0x86, 0x86, 0x86, 0x7a, 0xfc, 0x00, 0x00, 0x7e, 0xbd, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xbd, 0x7e, 0x00)   ' 8
+'const Nine as byte [24] = (
+'    0x00, 0xfc, 0x7a, 0x86, 0x86, 0x86, 0x86, 0x86, 0x86, 0x7a, 0xfc, 0x00, 0x00, 0x00, 0x81, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xc3, 0xbd, 0x7e, 0x00)   ' 9
+' Big font array for dose
+const Zero as byte [24] = (
+    $00, $FE, $FE, $FE, $06, $06, $06, $06, $FE, $FE, $FE, $00, $00, $7F, $7F, $7F, $60, $60, $60, $60, $7F, $7F, $7F, $00)   ' 0
+const One as byte [24] = (
+    $00, $00, $00, $06, $06, $FE, $FE, $FE, $00, $00, $00, $00, $00, $00, $00, $60, $60, $7F, $7F, $7F, $60, $60, $00, $00)   ' 1
+const Two as byte [24] = (
+    $00, $86, $86, $86, $86, $86, $86, $86, $FE, $FE, $FE, $00, $00, $7F, $7F, $7F, $60, $60, $60, $60, $60, $60, $60, $00)   ' 2
+const Thre as byte [24] = (
+    $00, $06, $06, $06, $06, $86, $86, $86, $FE, $FE, $FE, $00, $00, $60, $60, $60, $60, $61, $61, $61, $7F, $7F, $7F, $00)   ' 3
+const Four as byte [24] = (
+    $00, $FE, $FE, $FE, $80, $80, $80, $80, $FE, $FE, $FE, $00, $00, $01, $01, $01, $01, $01, $01, $01, $7F, $7F, $7F, $00)   ' 4
+const Five as byte [24] = (
+    $00, $FE, $FE, $FE, $86, $86, $86, $86, $86, $86, $86, $00, $00, $61, $61, $61, $61, $61, $61, $61, $7F, $7F, $7F, $00)   ' 5
+const Six as byte [24] = (
+    $00, $FE, $FE, $FE, $86, $86, $86, $86, $86, $86, $86, $00, $00, $7F, $7F, $7F, $61, $61, $61, $61, $7F, $7F, $7F, $00)   ' 6
+const Seven as byte [24] = (
+    $00, $06, $06, $06, $06, $06, $06, $06, $FE, $FE, $FE, $00, $00, $00, $00, $00, $00, $00, $00, $00, $7F, $7F, $7F, $00)   ' 7
+const Eight as byte [24] = (
+    $00, $FE, $FE, $FE, $86, $86, $86, $86, $FE, $FE, $FE, $00, $00, $7F, $7F, $7F, $61, $61, $61, $61, $7F, $7F, $7F, $00)   ' 8
+const Nine as byte [24] = (
+    $00, $FE, $FE, $FE, $86, $86, $86, $86, $FE, $FE, $FE, $00, $00, $01, $01, $01, $01, $01, $01, $01, $7F, $7F, $7F, $00)   ' 9
+
+const KK as byte [24] = (
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)   ' space between numbers
+
+' LCD module connections
+dim Chip_Select as sbit at RB4_bit
+    SoftSpi_CLK as sbit at RC1_bit
+    SoftSpi_SDI as sbit at RA4_bit     'RA4
+    SoftSpi_SDO as sbit at RC0_bit
+
+dim Chip_Select_Direction as sbit at TRISB4_bit
+    SoftSpi_CLK_Direction as sbit at TRISC1_bit
+    SoftSpi_SDI_Direction as sbit at TRISA4_bit
+    SoftSpi_SDO_Direction as sbit at TRISC0_bit
+' End LCD module connections
+
+'-------------------------------GLOBAL VARIABLES-------------------------------'
+
+dim rreset  as sbit at PORTC.RC7                ' display reset pin
+    ddata   as sbit at PORTC.RC6                ' display data control pin
+    alert   as bit
+
+dim const DISPLAY_ON     = 0xAF                 '  Display on
+    const DISPLAY_OFF    = 0xAE                 '  Display off
+    const SET_ADC        = 0xA1                 '  Reverse disrect (SEG131-SEG0)
+    const CLEAR_ADC      = 0xA0                 '  Normal disrect (SEG0-SEG131)
+    const REVERSE_D_ON   = 0xA7                 '  Reverse display : 0 illuminated
+    const REVERSE_D_OFF  = 0xA6                 '  Normal display : 1 illuminated
+    const ENTIRE_D_ON    = 0xA5                 '  Entire dislay   Force whole LCD point
+    const ENTIRE_D_OFF   = 0xA4                 '  Normal display
+    const SET_BIAS       = 0xA3                 '  bias 1
+    const CLEAR_BIAS     = 0xA2                 '  bias 0
+    const SET_MODIFY_R   = 0xE0                 '  Stop automatic increment of the column address by the read instruction
+    const RESET_MODIFY_R = 0xEE                 '  Cancel Modify_read, column address return to its initial value just before the Set Modify Read instruction is started
+    const RESETD         = 0xE2                 ' reset command
+    const SET_SHL        = 0xC8                 ' SHL 1,COM63-COM0
+    const CLEAR_SHL      = 0xC0                 ' SHL 0,COM0-COM63
+
+dim    event         as bit                    ' flags variables
+dim    sound         as bit
+dim    sek_over      as bit
+dim    cpm_read_done as bit
+dim    button_check  as bit
+dim    buzzer_started as bit
+dim    demo_bit      as bit
+
+dim    xx          as byte                        ' cpm array counter
+dim    G_xx        as byte                        ' cpm array for graph
+dim    CF          as byte                        ' conversion factor
+dim    n1          as byte                        ' help to resolve first count bug
+dim    scale_c     as byte                        ' bargraph scale
+dim    hh          as byte                        ' byte for drawing fonts
+dim    bbb         as byte                        ' PWM byte
+dim    sekunds     as byte                        ' byte for time
+dim    minutes     as byte
+dim    hours       as byte
+dim    sek_counter as byte                        ' byte for timer
+dim    ALARM_H     as byte                        ' byte for saving alarm
+dim    ALARM_L     as byte
+dim    units       as byte                        ' units select byte Key1, Key2
+dim    byte_low    as byte
+dim    byte_high   as byte
+dim    graph_pos   as byte                        ' graph position
+dim    display     as byte                        ' display select byte
+dim    play_sound  as byte                        ' byte to keep sound settings to eeprom
+dim    b_count     as byte                        ' byte to count time for checking buttons
+dim    tube_square as byte                        ' byte to hold tube cm square to eeprom
+dim    BG          as byte                        ' byte for regular background to eeprom
+dim    DL          as byte                        ' byte for detection limit for Bq/sample
+dim    becquerel   as byte                        ' use Bq serial output flag
+dim    p_one       as byte                        ' lenght of podka4ka
+dim    p_two       as byte                        ' lenght of podka4ka
+dim    p_tree      as byte                        ' lenght of podka4ka
+dim    p_four      as byte                        ' lenght of podka4ka
+dim    timer_byte  as byte                        ' lenght of podka4ka
+dim    buzzer_counter as byte                     ' for sound counter
+dim    vers        as byte                        ' firmware version 2.XX
+dim    DT          as byte                        ' dead time us from eeprom
+dim    smartBL     as byte                        ' smart backlight flag
+
+
+dim    LOW_BYTE  as byte                          ' max cpm for eeprom interpretation
+       HI_BYTE   as byte
+       HG_BYTE   as byte
+       HS_BYTE   as byte
+
+dim    probe     as byte                          ' flag to set external probe usage and power down the PWM
+
+'dim    sec_low   as byte
+'       sec_hi    as byte
+'       sec_hg    as byte
+'       sec_hs    as byte
+'       sec_num   as byte
+       
+dim  m_period    as byte                         ' byte for time
+dim  timer_cnt   as byte                         ' byte for timer
+
+dim  adc_rd      as integer                      ' ADC readings
+     tlong       as integer                      ' high voltage mv
+     batlong     as integer                      ' bat voltage mv
+dim  dead_time   as integer                      ' dead time us variable that actually used in program, not eeprom byte
+
+dim  cnt         as word                         ' counters
+     cnt_s       as word
+     sek_cnt     as word
+     parid_cpm   as word                         ' rapid cpm changes
+     ch          as word                         ' mod/div variable
+     ALARM       as word                         ' ALARM
+     nn          as word                         ' variable for driving display
+     counts      as word                         ' events count
+     delitel     as word                         ' for Bq calculation
+
+dim  old_cpm     as longword                     ' previous cpm
+dim  cpm         as longword                     ' cpm
+     cpm_total   as longword                     ' for total absorbed
+     dose        as longword                     ' dose
+     dose_total  as longword                     ' absorbed dose during work
+     CX          as longword[12]                 ' moving average cpm array   6
+     G_cpm       as longword[64]                     ' array for 64 last counts readings
+     G_cpm_max   as longword                         ' max cpm for graph
+     cpm_max     as longword                     ' max cpm during session for eeprom
+     s_high2     as longword                     ' graph high
+dim  CF2         as longint                      ' conversion factor for Rn
+
+dim  cpm_compensated as float                    ' compensated cpm value
+dim  c_factor        as float                    ' compensation factor
+
+'dim  bars        as float                        ' bars for bargraph
+'     bargraph    as longword                     ' for bargraph scale
+
+
+dim  CPM_Display     as char[10]                   ' cpm text for display
+dim  DispV           as string[6]                  ' high voltage text
+     sekunds_txt     as string[3]                  ' sekunds text
+     tube_limit_txt  as string[3]                  ' text
+     cps_txt         as string[6]
+   '  bbb_display as string[3]
+     ver_disp        as string[3]
+
+dim  dose_Bq         as float                     ' Bq dose to
+dim  dose_Bq_txt     as char[23]                  ' Bq dose text to send via uart
+
+'------------------------------------------------------------------------------'
+'---------------------------TUBE INTERRUPT-------------------------------------'
+
+ sub procedure interrupt()             ' Interrupt Settings
+
+  if (TMR0IF_bit = 1) then
+    LATA.5  = 0                        ' turn off podkachka
+    T0CON = %01001000
+    TMR0IF_bit = 0
+  end if
+
+   if (TMR3IF_bit = 1) then
+    if (buzzer_counter = 4) then
+      LATB.3 = 0
+      buzzer_counter = 0
+      buzzer_started = 0
+      TMR3ON_bit = 0
+      else
+      if buzzer_started = 1 then
+       LATB.3 = not LATB.3
+      end if
+      inc (buzzer_counter)
+     end if
+     TMR3H = 0xFF
+     TMR3L = 0x91                       'd2
+ '    TMR3ON_bit = 0
+     TMR3IF_bit = 0
+  end if
+   
+
+
+  if (TMR1IF_bit = 1) then             ' Test Timer1 interrupt flag
+
+    if(b_count = 4) then               ' let check buttons every 250 ms
+      b_count = 0
+      button_check = 1
+    else
+     inc(b_count)
+    end if
+
+    if(sek_counter = 19) then          ' secund is over timer
+       sek_counter = 0
+       sek_cnt = cnt_s
+       cnt_s = 0
+       sek_over = 1
+      else
+       inc(sek_counter)
+    end if
+
+    if(timer_cnt = m_period) then      ' When time elapsed    m_period
+      counts = cnt                     ' Store result in counts
+      cnt = 0                          ' Reset counter
+      timer_cnt = 0                    ' Reset timer_cnt
+      cpm_read_done = 1                ' Set flag = 1
+     else
+      inc(timer_cnt)                   ' Increment timer_cnt if not elapsed 10 second
+    end if
+
+    TMR1H = 0xE7                       ' First write higher byte to TMR1 0xCF2C
+    TMR1L = 0x96                       ' Write lower byte to TMR1
+'    TMR1H = 0xD8                       ' First write higher byte to TMR1 0xCF2C
+'    TMR1L = 0xF0                       ' Write lower byte to TMR1
+    TMR1IF_bit = 0                     ' Clear Timer1 interrupt flag
+  end if
+
+  if(INT0F_bit) then                   ' Test RB0/INT interrupt flag
+    cnt = cnt + 1                      ' Count interrupts on RB0/INT pin
+    cnt_s = cnt_s + 1
+             if probe = 0x00 then
+                  LATA.5  = 1                        ' Turn on podka4ka
+                 'LATB.3  = 1                        ' Turn on LED
+                  TMR0L   = timer_byte               ' set timer
+                  T0CON = %11001000                  ' start timer
+              end if
+              
+              if sound = 1 then
+                  buzzer_started = 1
+                  buzzer_counter = 0
+                  LATB.3 = 1
+                  TMR3H = 0xFF
+                  TMR3L = 0x91
+                  TMR3ON_bit = 1
+              end if
+    INT0F_bit = 0                      ' Clear RB0/INT interrupt flag
+
+  end if
+
+end sub
+
+
+
+
+sub procedure InitLCD()
+    rreset = 1
+    ddata  = 0
+    Soft_SPI_Write (RESETD)
+    delay_us(2000)
+    rreset = 0
+    delay_us(2000)
+    rreset = 1
+    delay_ms(100)
+    Soft_SPI_Write (CLEAR_ADC)
+    Soft_SPI_Write (CLEAR_BIAS)
+    Soft_SPI_Write (%00101111)              ' power control
+    Soft_SPI_Write (%00100100)              ' LCD contrast level 4
+    'Soft_SPI_Write (0x20 OR 0x05)           ' regulator resistor select
+    'Soft_SPI_Write (0x81)                  ' set contrast level
+    Soft_SPI_Write (SET_SHL)
+    Soft_SPI_Write (0x40)                   ' initial dispaly line  COM0
+    Soft_SPI_Write (DISPLAY_ON)
+
+end sub
+
+sub procedure ClearLCD()
+    dim cl, cnn as byte
+    for cl = 176 to 183 step 1            ' clear whole display   183 176
+      ddata = 0
+      Soft_SPI_Write(cl)             ' set page from 0 to 7
+      Soft_SPI_Write(%00010000)     ' set column on 0 column position
+      Soft_SPI_Write(%00000000)
+      ddata = 1
+      for cnn = 0 to 127            ' write zero array
+       Soft_SPI_Write(0x00)
+      next cnn
+    next cl
+end sub
+
+sub procedure PositionLCD(dim x,y as byte)
+ dim position_low, position_high, temp_x as byte
+ temp_x = x
+ position_high = %00010000 OR x>>4
+ position_low  = %00000000 OR temp_x<<4
+ position_low  = %00000000 OR position_low>>4
+ ddata = 0
+ select case y
+   case 7
+    Soft_SPI_Write(183)
+   case 6
+    Soft_SPI_Write(182)
+   case 5
+    Soft_SPI_Write(181)
+   case 4
+    Soft_SPI_Write(180)
+   case 3
+    Soft_SPI_Write(179)
+   case 2
+    Soft_SPI_Write(178)
+   case 1
+    Soft_SPI_Write(177)
+   case 0
+    Soft_SPI_Write(176)
+ end select
+    Soft_SPI_Write(position_high)
+    Soft_SPI_Write(position_low)
+ ddata = 1
+end sub
+
+sub procedure Chr_LCD(Dim symlcd as Byte)
+Dim l, m as Byte
+    ddata = 1
+    For l = 1 to 5
+      m = (symlcd - 32)
+      m = m * 5
+      m = m + l
+      m = m - 1
+      Soft_SPI_Write(fontlookup1[m])
+    Next l
+  Soft_SPI_Write(0x00)          ' Space between characters
+
+end sub
+
+Sub Procedure Text_LCD(Dim x, y as byte, Dim Byref sentance as string)
+Dim v as byte
+
+  PositionLCD(x,y)
+  For v = 0 to length(sentance)-1
+    Chr_LCD(sentance[v])
+  Next v
+End Sub
+
+sub procedure Char_LCD(dim bykva as char)
+ dim index as integer
+ dim character as integer
+  ddata = 1
+   for index =1 to 5
+      character = bykva - 0x20
+      character = character * 5
+      character = character + index
+      character = character - 1
+    Soft_SPI_Write(table[character])
+
+   next index
+end sub
+
+Sub Procedure MyText_LCD(Dim x, y as byte, Dim Byref sentance as string)
+Dim v as byte
+
+  PositionLCD(x,y)
+  For v = 0 to length(sentance)-1
+    Char_LCD(sentance[v])
+    Soft_SPI_Write(0x00)
+  Next v
+End Sub
+
+sub procedure LCD_Chr_Big (dim px, py as byte, dim digit as byte)
+dim hh as byte
+
+     PositionLCD (px, py)
+     py = py + 1
+     digit = 48+digit
+     ddata = 1
+     if digit = "0" then
+         for hh = 0 to 11
+          Soft_SPI_Write (Zero[hh])
+     next hh
+     PositionLCD (px, py)
+     for hh = 12 to 23
+          Soft_SPI_Write (Zero[hh])
+     next hh
+     end if
+
+     if digit = "1" then
+         for hh = 0 to 11
+          Soft_SPI_Write (One[hh])
+     next hh
+     PositionLCD (px, py)
+     for hh = 12 to 23
+          Soft_SPI_Write (One[hh])
+     next hh
+     end if
+
+     if digit = "2" then
+         for hh = 0 to 11
+          Soft_SPI_Write (Two[hh])
+     next hh
+     PositionLCD (px, py)
+     for hh = 12 to 23
+          Soft_SPI_Write (Two[hh])
+     next hh
+     end if
+
+     if digit = "3" then
+         for hh = 0 to 11
+          Soft_SPI_Write (Thre[hh])
+     next hh
+     PositionLCD (px, py)
+     for hh = 12 to 23
+          Soft_SPI_Write (Thre[hh])
+     next hh
+     end if
+
+     if digit = "4" then
+         for hh = 0 to 11
+          Soft_SPI_Write (Four[hh])
+     next hh
+     PositionLCD (px, py)
+     for hh = 12 to 23
+          Soft_SPI_Write (Four[hh])
+     next hh
+     end if
+
+     if digit = "5" then
+         for hh = 0 to 11
+          Soft_SPI_Write (Five[hh])
+     next hh
+     PositionLCD (px, py)
+     for hh = 12 to 23
+          Soft_SPI_Write (Five[hh])
+     next hh
+     end if
+
+     if digit = "6" then
+         for hh = 0 to 11
+          Soft_SPI_Write (Six[hh])
+     next hh
+     PositionLCD (px, py)
+     for hh = 12 to 23
+          Soft_SPI_Write (Six[hh])
+     next hh
+     end if
+
+     if digit = "7" then
+         for hh = 0 to 11
+          Soft_SPI_Write (Seven[hh])
+     next hh
+     PositionLCD(px, py)
+     for hh = 12 to 23
+          Soft_SPI_Write (Seven[hh])
+     next hh
+     end if
+
+     if digit = "8" then
+         for hh = 0 to 11
+          Soft_SPI_Write (Eight[hh])
+     next hh
+     PositionLCD (px, py)
+     for hh = 12 to 23
+          Soft_SPI_Write (Eight[hh])
+     next hh
+     end if
+
+     if digit = "9" then
+         for hh = 0 to 11
+          Soft_SPI_Write (Nine[hh])
+     next hh
+     PositionLCD (px, py)
+     for hh = 12 to 23
+          Soft_SPI_Write (Nine[hh])
+     next hh
+     end if
+
+end sub
+  sub procedure NOK_Print(dim poloska as byte)
+       Soft_SPI_Write(poloska)
+  end sub
+
+sub procedure Display_Logo()
+ dim xx, yy as byte
+ zz as word
+ zz = 0
+ for xx = 0 to 7
+    PositionLCD (0, xx)
+      for yy = 0 to 127
+       Soft_SPI_Write (rh_logo[zz+yy])
+      next yy
+    zz = zz+128
+   next xx
+end sub
+
+sub procedure halt_system()
+ dim xx, yy as byte
+ zz as word
+ zz = 0
+ for xx = 0 to 7
+    PositionLCD (0, xx)
+      for yy = 0 to 127
+       Soft_SPI_Write (lowbat[zz+yy])
+      next yy
+    zz = zz+128
+   next xx
+    LATA.2   = 0
+    LATB.3   = 0
+    LATA.5   = 0
+    TMR0IE_bit = 0
+    TMR1IE_bit = 0
+    TMR2IE_bit = 0
+    TMR3IE_bit = 0
+    INT0IE_bit = 0
+    CCP1CON    = %00000000
+    PORTC.2    = 0
+    ADCON0     = %00000000
+    sleep
+end sub
+
+'sub procedure demo_end()
+' dim xx, yy as byte
+' zz as word
+' zz = 0
+' for xx = 0 to 7
+'    PositionLCD (0, xx)
+'      for yy = 0 to 127
+'       Soft_SPI_Write (demo[zz+yy])
+'      next yy
+'    zz = zz+128
+'   next xx
+'    LATA.2   = 0
+'    LATB.3   = 0
+'    LATA.5   = 0
+'    TMR0IE_bit = 0
+'    TMR1IE_bit = 0
+'    TMR2IE_bit = 0
+'    TMR3IE_bit = 0
+'    INT0IE_bit = 0
+'    CCP1CON    = %00000000
+'    PORTC.2    = 0
+'    ADCON0     = %00000000
+'    sleep
+'end sub
+
+ sub procedure sendcpm(dim byref cpms as string)
+ dim res1, v1 as byte
+  ltrim (cpms)
+  res1 = length(cpms)
+  res1 = res1 -1
+     GIEH_bit = 0
+     GIEL_bit = 0
+     LATA.5  = 0
+     LATB.3 = 0
+  for v1 = 0 to res1
+   Soft_UART_Write(cpms[v1])
+  next v1
+
+ end sub
+
+ sub procedure sendrandom(dim byref randomtxt as string)
+ dim v2 as byte
+
+  for v2 = 7 to 0 step -1
+   Soft_UART_Write(randomtxt[v2])
+  next v2
+
+ end sub
+
+
+'--------------------------CALIBRATION PROCEDURE-------------------------------'
+ sub procedure calibration()
+    GIE_bit = 0
+    'light = 1
+    LATA.2   = 1 ' light
+    LATB.3 = 0
+    LATA.5  = 0
+    LATB.7  = 0             ' turn off alert on portb.7 and wait for button
+    TRISB.7 = 1             ' input
+    
+     ClearLCD()
+     MyText_LCD(32,6,  "use to set:")
+     MyText_LCD(24, 7, "plus,minus,OK")
+     MyText_LCD(0,0, "CF=0.0")
+     ch = (CF div 100) mod 10
+     PositionLCD(36, 0)
+     Char_LCD (48+ch)
+     Soft_SPI_Write(0x00)
+     ch = (CF div 10) mod 10
+     Char_LCD (48+ch)
+     Soft_SPI_Write(0x00)
+     ch = CF mod 10
+     Char_LCD (48+ch)
+     Soft_SPI_Write(0x00)
+
+
+
+    CF_calib:
+    while (1)
+     if Button (PORTB, 7, 150, 1) then
+       inc (CF)
+         if CF> 0xFA then
+          dec (CF)
+         end if
+     ch = (CF div 100) mod 10
+     PositionLCD(36, 0)
+     Char_LCD (48+ch)
+     Soft_SPI_Write(0x00)
+     ch = (CF div 10) mod 10
+     Char_LCD (48+ch)
+     Soft_SPI_Write(0x00)
+     ch = CF mod 10
+     Char_LCD (48+ch)
+     Soft_SPI_Write(0x00)
+
+     end if
+
+     if Button (PORTB, 6, 150, 1) then
+       dec (CF)
+         if CF<0x01 then
+           inc (CF)
+         end if
+     ch = (CF div 100) mod 10
+     PositionLCD(36, 0)
+     Char_LCD (48+ch)
+     Soft_SPI_Write(0x00)
+     ch = (CF div 10) mod 10
+     Char_LCD (48+ch)
+     Soft_SPI_Write(0x00)
+     ch = CF mod 10
+     Char_LCD (48+ch)
+     Soft_SPI_Write(0x00)
+
+     end if
+
+     if Button (PORTB, 5, 150, 1) then         'ok
+       EEPROM_Write (0x00, CF)
+       delay_ms(100)
+       goto tube_limit
+     end if
+    wend
+
+
+    tube_limit:                                   ' set normal background limit
+
+      MyText_LCD(0,1, "BG=              CPM")
+      ByteToStr (BG, tube_limit_txt)
+      MyText_LCD(20, 1, tube_limit_txt)
+     tube_limit_set:
+     while(1)
+           if Button (PORTB, 7, 150, 1) then
+             inc(BG)
+              if BG>254 then
+                 BG = 254
+              end if
+              ByteToStr (BG, tube_limit_txt)
+              MyText_LCD(20, 1, tube_limit_txt)
+           end if
+
+           if Button (PORTB, 6, 150, 1) then
+             dec(BG)
+              if BG<3 then
+                 BG = 3
+              end if
+              ByteToStr (BG, tube_limit_txt)
+              MyText_LCD(20, 1, tube_limit_txt)
+           end if
+           if Button (PORTB, 5, 150, 1) then         'ok
+             DL = sqrt(BG) * 4.65 + 3
+             EEPROM_Write (0x07, BG)
+             delay_ms(100)
+             EEPROM_Write (0x08, DL)
+             delay_ms(100)
+             goto tube_square_set
+           end if
+    wend
+    tube_square_set:
+      MyText_LCD(0,2,"SQ=             cm^2")
+      ByteToStr (tube_square, tube_limit_txt)
+      MyText_LCD(20, 2, tube_limit_txt)
+     while(1)
+           if Button (PORTB, 7, 150, 1) then
+             inc(tube_square)
+              if tube_square>254 then
+                 tube_square = 254
+              end if
+              ByteToStr (tube_square, tube_limit_txt)
+              MyText_LCD(20, 2, tube_limit_txt)
+           end if
+
+           if Button (PORTB, 6, 150, 1) then
+             dec(tube_square)
+              if tube_square<3 then
+                 tube_square = 3
+              end if
+              ByteToStr (tube_square, tube_limit_txt)
+              MyText_LCD(20, 2, tube_limit_txt)
+           end if
+           if Button (PORTB, 5, 150, 1) then         'ok
+             EEPROM_Write (0x06, tube_square)
+             delay_ms(100)
+             goto dead_time_set
+           end if
+    wend
+    dead_time_set:
+       MyText_LCD(0,3,"DT=             ;Sec")
+       ByteToStr (DT, tube_limit_txt)
+       MyText_LCD(20, 3, tube_limit_txt)
+       while(1)
+           if Button (PORTB, 7, 150, 1) then
+             inc(DT)
+              if DT>251 then
+                 DT = 250
+              end if
+              ByteToStr (DT, tube_limit_txt)
+              MyText_LCD(20, 3, tube_limit_txt)
+           end if
+
+           if Button (PORTB, 6, 150, 1) then
+             dec(DT)
+              if DT<2 then
+                 DT = 1
+              end if
+              ByteToStr (DT, tube_limit_txt)
+              MyText_LCD(20, 3, tube_limit_txt)
+           end if
+           if Button (PORTB, 5, 150, 1) then         'ok
+             EEPROM_Write (0x0A, DT)
+             delay_ms(100)
+             goto becquerel_output
+           end if
+       wend
+
+    becquerel_output:
+       MyText_LCD(0,4,"USB data:CPM")
+       becquerel  = 0x00
+     while(1)
+           if Button (PORTB, 7, 150, 1) then        '+
+             MyText_LCD(54,4,"CPM")
+             becquerel  = 0x00
+           end if
+
+           if Button (PORTB, 6, 150, 1) then        '-
+            MyText_LCD(54,4,"Bq ")
+             becquerel = 0x01
+           end if
+           if Button (PORTB, 5, 150, 1) then         'ok
+             EEPROM_Write (0x09, becquerel)
+             delay_ms(100)
+             goto backlight_settings
+           end if
+           
+     wend
+    backlight_settings:
+       MyText_LCD(0,5,"Smart Backlight? YES")
+       smartBL  = 0x01
+     while(1)
+           if Button (PORTB, 7, 150, 1) then        '+
+             MyText_LCD(102,5,"YES")
+             smartBL  = 0x01
+           end if
+
+           if Button (PORTB, 6, 150, 1) then        '-
+            MyText_LCD(102,5,"NO ")
+             smartBL  = 0x00
+           end if
+           if Button (PORTB, 5, 150, 1) then         'ok
+             EEPROM_Write (0x10, smartBL)
+             delay_ms(100)
+             goto exit_calibration
+           end if
+
+     wend
+
+    exit_calibration:
+
+       ClearLCD()
+       counts = 0
+       cpm = 0
+       dose = 0
+       timer_cnt = 0
+       cpm_read_done = 0
+       TMR1IF_bit = 0
+       reset
+ end sub
+
+'--------------------------ALERT SET PROCEDURE---------------------------------'
+ sub procedure signalization()
+
+   dim zzz as word
+   dim txt1 as char[5]
+   dim shag as byte
+   shag = 10
+   ClearLCD()
+   
+   MyText_LCD(8,0,   "SET ALERT CPM NOW?")
+   MyText_LCD(32,6,  "use to set:")
+   MyText_LCD(24, 7, "plus,minus,OK")
+
+      WordToStr (ALARM, txt1)
+      ltrim (txt1)
+      MyText_LCD (51, 2, txt1)
+    for zzz = 0 to 30000
+       if Button (PORTB, 7, 50, 1) or Button (PORTB, 6, 150, 1) then
+        goto CHANGE
+       end if
+    next zzz
+    goto CHANGE2
+
+    CHANGE:
+
+    while (1)
+         if ALARM >= 200 then
+         shag = 100
+         else
+         shag = 10
+         end if
+         
+     if Button (PORTB, 7, 150, 1) then
+       ALARM = ALARM + shag
+         if ALARM>5000 then
+          ALARM = 5000
+         end if
+      WordToStr (ALARM, txt1)
+      ltrim (txt1)
+      MyText_LCD (51, 2, "     ")
+      MyText_LCD (51, 2, txt1)
+     end if
+
+     if Button (PORTB, 6, 150, 1) then
+       ALARM = ALARM - shag
+         if ALARM<10 then
+           ALARM = 10
+         end if
+      WordToStr (ALARM, txt1)
+      ltrim(txt1)
+      MyText_LCD (51, 2, "     ")
+      MyText_LCD (51, 2, txt1)
+     end if
+
+     if Button (PORTB, 5, 150, 1) then
+       ALARM_L = Lo (ALARM)
+       ALARM_H = Hi (ALARM)
+       EEPROM_Write (0x02,ALARM_L)
+       EEPROM_Write (0x03,ALARM_H)
+       goto CHANGE2
+     end if
+    wend
+    CHANGE2:
+    ALARM = ALARM / 60             'convert ALARM to cps
+    ClearLCD()
+ end sub
+
+sub procedure parameters()                     ' show saved parameters at startup
+
+     MyText_LCD(0,0, "MAX CPM:")
+     LongWordToStr (cpm_max, CPM_Display)
+     ltrim(CPM_Display)
+     MyText_LCD(50,0, CPM_Display)
+     
+     MyText_LCD(0,1, "CF=0.0")
+     ch = (CF div 100) mod 10
+     PositionLCD(36, 1)
+     Char_LCD (48+ch)
+     Soft_SPI_Write(0x00)
+     ch = (CF div 10) mod 10
+     Char_LCD (48+ch)
+     Soft_SPI_Write(0x00)
+     ch = CF mod 10
+     Char_LCD (48+ch)
+     
+     MyText_LCD(0,2, "BG=")
+     ByteToStr (BG, tube_limit_txt)
+     MyText_LCD(20, 2, tube_limit_txt)
+     MyText_LCD(50,2, "CPM")
+     
+     MyText_LCD(0,3, "SQ=")
+     ByteToStr (tube_square, tube_limit_txt)
+     MyText_LCD(20, 3, tube_limit_txt)
+     MyText_LCD(50,3, "cm^2")
+     
+     MyText_LCD(0,4, "DL=")
+     ByteToStr (DL, tube_limit_txt)
+     MyText_LCD(20, 4, tube_limit_txt)
+     MyText_LCD(50,4, "CPM")
+     
+     MyText_LCD(0,5, "DT=")
+     ByteToStr (DT, tube_limit_txt)
+     MyText_LCD(20, 5, tube_limit_txt)
+     MyText_LCD(50,5, "micro seconds")
+     
+
+       delay_ms(2000)
+       ClearLCD()
+
+
+end sub
+
+'------------------------------PRINT DOSE uSv----------------------------------'
+ sub procedure dosextract()
+
+                            if dose < 100000 then
+                                Text_LCD(54,2,",")
+                                ch = (dose div 10000)
+                                LCD_Chr_Big(10, 1, ch)
+                                PositionLCD (22, 1)
+                                 for hh = 0 to 11
+                                 Soft_SPI_Write (KK[hh])
+                                 next hh
+                                 PositionLCD (22, 2)
+                                 for hh = 12 to 23
+                                 Soft_SPI_Write (KK[hh])
+                                 next hh
+                                Text_LCD(22,2,")")
+                                ch = (dose div 1000) mod 10
+                                LCD_Chr_Big(27, 1, ch)
+                                ch = (dose div 100) mod 10
+                                LCD_Chr_Big (39, 1, ch)
+                              else
+                               if dose < 1000000 then
+                                Text_LCD(54,2,",")
+
+                                    ch = (dose div 100000)
+                                    LCD_Chr_Big(10, 1, ch)
+                                    ch = (dose div 10000) mod 10
+                                    LCD_Chr_Big (22, 1, ch)
+                                    PositionLCD (34, 1)
+                                     for hh = 0 to 11
+                                     Soft_SPI_Write (KK[hh])
+                                     next hh
+                                     PositionLCD (34, 2)
+                                     for hh = 12 to 23
+                                     Soft_SPI_Write (KK[hh])
+                                     next hh
+                                    Text_LCD (34, 2, ")")
+                                    ch = (dose div 1000) mod 10
+                                    LCD_Chr_Big (39, 1, ch)
+                                    else
+                                          Text_LCD(54,2,"+")
+                                          ch = (dose div 10000000)
+                                          LCD_Chr_Big (10, 1, ch)
+                                          PositionLCD (22, 1)
+                                           for hh = 0 to 11
+                                           Soft_SPI_Write (KK[hh])
+                                           next hh
+                                           PositionLCD (22, 2)
+                                           for hh = 12 to 23
+                                           Soft_SPI_Write (KK[hh])
+                                           next hh
+                                          Text_LCD (22, 2, ")")
+                                          ch = (dose div 1000000) mod 10
+                                          LCD_Chr_Big (27, 1, ch)
+                                          ch = (dose div 100000) mod 10
+                                          LCD_Chr_Big (39, 1, ch)
+
+
+
+
+                                end if
+                            end if
+
+   end sub
+
+
+'------------------------------PRINT DOSE uRn----------------------------------'
+ sub procedure dosextract2()
+
+                            if dose < 1000 then
+                                Text_LCD(54,2,",")
+                                ch = (dose div 100)
+                                LCD_Chr_Big(10, 1, ch)
+                                PositionLCD (22, 1)
+                                 for hh = 0 to 11
+                                 Soft_SPI_Write (KK[hh])
+                                 next hh
+                                 PositionLCD (22, 2)
+                                 for hh = 12 to 23
+                                 Soft_SPI_Write (KK[hh])
+                                 next hh
+                                Text_LCD(22,2,")")
+                                ch = (dose div 10) mod 10
+                                LCD_Chr_Big(27, 1, ch)
+                                ch = dose mod 10
+                                LCD_Chr_Big (39, 1, ch)
+                              else
+                               if dose < 10000 then
+                                Text_LCD(54,2,",")
+
+                                    ch = (dose div 1000)
+                                    LCD_Chr_Big(10, 1, ch)
+                                    ch = (dose div 100) mod 10
+                                    LCD_Chr_Big (22, 1, ch)
+                                    PositionLCD (34, 1)
+                                     for hh = 0 to 11
+                                     Soft_SPI_Write (KK[hh])
+                                     next hh
+                                     PositionLCD (34, 2)
+                                     for hh = 12 to 23
+                                     Soft_SPI_Write (KK[hh])
+                                     next hh
+                                    Text_LCD (34, 2, ")")
+                                    ch = (dose div 10) mod 10
+                                    LCD_Chr_Big (39, 1, ch)
+                                    else
+                                          if dose < 1000000 then
+                                            Text_LCD(54,2,"+")
+                                            ch = (dose div 100000)
+                                            LCD_Chr_Big (10, 1, ch)
+                                            PositionLCD (22, 1)
+                                             for hh = 0 to 11
+                                             Soft_SPI_Write (KK[hh])
+                                             next hh
+                                             PositionLCD (22, 2)
+                                             for hh = 12 to 23
+                                             Soft_SPI_Write (KK[hh])
+                                             next hh
+                                            Text_LCD (22, 2, ")")
+                                            ch = (dose div 10000) mod 10
+                                            LCD_Chr_Big (27, 1, ch)
+                                            ch = (dose div 1000) mod 10
+                                            LCD_Chr_Big (39, 1, ch)
+                                          else
+                                            if dose <10000000 then
+                                              Text_LCD(54,2,"+")
+                                              ch = (dose div 1000000)
+                                              LCD_Chr_Big (10, 1, ch)
+                                              ch = (dose div 100000) mod 10
+                                              LCD_Chr_Big (22, 1, ch)
+                                              PositionLCD (34, 1)
+                                               for hh = 0 to 11
+                                               Soft_SPI_Write (KK[hh])
+                                               next hh
+                                               PositionLCD (34, 2)
+                                               for hh = 12 to 23
+                                               Soft_SPI_Write (KK[hh])
+                                               next hh
+                                              Text_LCD (34, 2, ")")
+                                              ch = (dose div 10000) mod 10
+                                              LCD_Chr_Big (39, 1, ch)
+                                            else
+                                              Text_LCD(54,2,"+")
+                                              PositionLCD (10, 1)
+                                               for hh = 0 to 11
+                                               Soft_SPI_Write (KK[hh])
+                                               next hh
+                                               PositionLCD (10, 2)
+                                               for hh = 12 to 23
+                                               Soft_SPI_Write (KK[hh])
+                                               next hh
+                                              ch = (dose div 10000000)
+                                              LCD_Chr_Big (15, 1, ch)
+                                              ch = (dose div 1000000) mod 10
+                                              LCD_Chr_Big (27, 1, ch)
+                                              ch = (dose div 100000) mod 10
+                                              LCD_Chr_Big (39, 1, ch)
+                                            end if
+
+                                          end if
+
+
+
+
+                                end if
+                            end if
+
+
+
+   end sub
+'---------------------------print Bq-------------------------------------------'
+sub procedure dosextract3()
+                            if dose < 100000 then
+                                Text_LCD(122,7,",")
+                                ch = (dose div 10000)
+                                PositionLCD(100,7)
+                                Chr_LCD(48+ch)
+                                Text_LCD(105, 7, "/")
+                                ch = (dose div 1000) mod 10
+                                PositionLCD(110,7)
+                                Chr_LCD(48+ch)
+                                ch = (dose div 100) mod 10
+                                PositionLCD(115,7)
+                                Chr_LCD(48+ch)
+                               else
+                               if dose < 1000000 then
+                                    Text_LCD(122, 7, ",")
+                                    ch = (dose div 100000)
+                                    PositionLCD(100,7)
+                                    Chr_LCD(48+ch)
+                                    ch = (dose div 10000) mod 10
+                                    PositionLCD(105,7)
+                                    Chr_LCD(48+ch)
+                                    Text_LCD (110, 7, "/")
+                                    ch = (dose div 1000) mod 10
+                                    PositionLCD(115,7)
+                                    Chr_LCD(48+ch)
+                                    else
+                                          Text_LCD(122, 7, "+")
+                                          ch = (dose div 10000000)
+                                          PositionLCD(100,7)
+                                          Chr_LCD(48+ch)
+                                          Text_LCD (105, 7, "/")
+                                          ch = (dose div 1000000) mod 10
+                                          PositionLCD(110,7)
+                                          Chr_LCD(48+ch)
+                                          ch = (dose div 100000) mod 10
+                                          PositionLCD(115,7)
+                                          Chr_LCD(48+ch)
+                                end if
+                            end if
+end sub
+
+'------------------------------------------------------------------------------'
+  sub procedure printSV()
+      PositionLCD (60, 2)
+      for nn = 0 to 19
+       Soft_SPI_Write (uSv_label[nn])
+      next nn
+  end sub
+
+  sub procedure printRN()
+      PositionLCD (60, 2)
+      for nn = 0 to 19
+       Soft_SPI_Write (uRn_label[nn])
+      next nn
+  end sub
+
+  sub procedure stolbik()
+
+   dim mesto, position as byte
+   position = 0
+     if G_cpm_max = 0 then
+      G_cpm_max = 1          '+1 to avoid Zero division
+     end if
+     for mesto = 63 to 0 step - 1              '29
+     s_high2 = (D_HIGH * G_cpm[mesto]) div G_cpm_max
+
+     if s_high2> 8  then
+       byte_low = %11111111
+
+       if s_high2 = 8 then
+       byte_high = %10000000
+       end if
+       if s_high2 = 9 then
+       byte_high = %10000000
+       end if
+       if s_high2 = 10 then
+       byte_high = %11000000
+       end if
+       if s_high2 = 11 then
+       byte_high = %11100000
+       end if
+       if s_high2 = 12 then
+       byte_high = %11110000
+       end if
+       if s_high2 = 13 then
+       byte_high = %11111000
+       end if
+       if s_high2 = 14 then
+       byte_high = %11111100
+       end if
+       if s_high2 = 15 then
+       byte_high = %11111110
+       end if
+       if s_high2 = 16 then
+       byte_high = %11111111
+       end if
+      else
+       byte_high = %00000000
+
+       if s_high2 = 0 then
+       byte_low = %10000000
+       end if
+       if s_high2 = 1 then
+       byte_low = %10000000
+       end if
+       if s_high2 = 2 then
+       byte_low = %11000000
+       end if
+       if s_high2 = 3 then
+       byte_low = %11100000
+       end if
+       if s_high2 = 4 then
+       byte_low = %11110000
+       end if
+       if s_high2 = 5 then
+       byte_low = %11111000
+       end if
+       if s_high2 = 6 then
+       byte_low = %11111100
+       end if
+       if s_high2 = 7 then
+       byte_low = %11111110
+       end if
+       if s_high2 = 8 then
+       byte_low = %11111111
+       end if
+     end if
+     PositionLCD(position, 4)         '1     position+12, 1
+     NOK_print(byte_high)
+     NOK_print(0x00)
+     PositionLCD(position, 5)         '2
+     NOK_print(byte_low)
+     NOK_print(0x00)
+     position = position + 2
+     next mesto
+
+  end sub
+  
+
+'---------------------END OF SUB PROCEDURES------------------------------------'
+
+
+
+main:
+'   Main program
+m_period       = 59          ' wait 3 seconds for INT stabilization
+'sekunds        = 3
+sek_over       = 0
+sek_counter    = 0
+alert          = 0
+counts         = 0
+cpm            = 0
+old_cpm        = 0
+cpm_total      = 0
+timer_cnt      = 0
+cpm_read_done  = 0
+ALARM          = 10
+n1             = 0
+graph_pos      = 0
+display        = 0
+button_check   = 0
+b_count        = 0
+buzzer_counter = 0
+buzzer_started = 0
+byte_low       = %00000000
+byte_high      = %00000000
+sekunds        = 0
+minutes        = 0
+hours          = 0
+probe          = 0x00             ' no probe by default
+
+PORTE.3 = 0                       ' PORTE.3 detect 5V rail connected
+TRISB      = %11100001
+LATB       = %00000001
+TRISC      = %00110000
+INTCON     = %00000000
+USBEN_bit  = 0                    ' turn off USB module
+UTRDIS_bit = 1
+HLVDEN_bit = 0                    ' disable H/L voltage detect
+
+
+TRISA.0 = 1                       ' BAT input
+TRISA.1 = 1                       ' HV input
+TRISA.2 = 0                       ' LIGHT output
+TRISA.3 = 1                       ' VREF input
+TRISA.5 = 0                       ' Podkachka output
+'---------------check if use smart backlight-----------------------------------'
+  smartBL    = EEPROM_Read (0x10)   ' smart backlight settings
+  if smartBL = 0x01 then
+   LATA.2   = 1                      ' Turn on the light
+  else
+   LATA.2   = 0
+  end if
+'-------------no current through MPSA44----------------------------------------'
+LATC.2  = 0                       ' avoid current flow through MPSA44 before PWM
+LATA.5  = 0
+'------------------SET ADC AND PWM---------------------------------------------'
+
+  ADCON1 = %00011101          ' Vref 1.21V AN3, Vref - VSS, RA0 RA1 analog inputs
+  ADCON0 = %00000001          ' enable AD module, select RA0 channel
+  CCP1IP_bit = 0  ' CCP1 low priority interrupt
+
+ if PORTC.4 = 0 then     ' check external probe DIP#2
+  probe = 0x00
+  if PORTC.5 = 0 then    ' check DIP#1 to set 400V or 500V range
+      PR2        = %01111100      ' set PWM 4% 100uS pulse 500Hz for 400V tubes
+      T2CON      = %00000111
+      CCPR1L     = %00000100      '%00000110
+      CCP1CON    = %00111100      '%00001100
+      p_one  = 190                ' set HV correction uder load   170
+      p_two  = 180                                                 '160
+      p_tree = 170                                                  '150
+      p_four = 190
+      timer_byte = p_one
+   else
+      PR2        = %01111100      ' set PWM 6% 500Hz  500V tubes
+      T2CON      = %00000111
+      CCPR1L     = %00000111
+      CCP1CON    = %00011100
+      p_one  = 150
+      p_two  = 140
+      p_tree = 130
+      p_four = 150
+      timer_byte = p_one
+  end if
+ end if
+ if PORTC.4 = 1 then
+  probe = 0x01
+      p_one  = 190
+      p_two  = 180
+      p_tree = 170
+      p_four = 190
+      timer_byte = p_one
+ end if
+ 
+'-------------------READ EEPROM------------------------------------------------'
+CF         = EEPROM_Read (0x00)   ' sievert conversion factor
+vers       = EEPROM_Read (0x01)   ' firmware version, start with 10
+ALARM_L    = EEPROM_Read (0x02)   ' ALARM l
+ALARM_H    = EEPROM_Read (0x03)   ' ALARM h
+units      = EEPROM_Read (0x04)   ' display units
+play_sound = EEPROM_Read (0x05)   ' sound on/off
+tube_square= EEPROM_Read (0x06)   ' tube square for bq
+BG         = EEPROM_Read (0x07)   ' tube normal background cpm for bq
+DL         = EEPROM_Read (0x08)   ' tube detection limit cpm for bq
+becquerel  = EEPROM_Read (0x09)   ' bq flag
+DT         = EEPROM_Read (0x0A)   ' dead time from eeprom
+'smartBL    = EEPROM_Read (0x10)   ' smart backlight settings
+
+LOW_BYTE   = EEPROM_Read (0x0C)   ' max cpm
+HI_BYTE    = EEPROM_Read (0x0D)
+HG_BYTE    = EEPROM_Read (0x0E)
+HS_BYTE    = EEPROM_Read (0x0F)
+
+'----------------make some calculation ----------------------------------------'
+delitel            = tube_square * 6
+G_cpm_max          = BG
+Lo(cpm_max)        = LOW_BYTE
+Hi(cpm_max)        = HI_BYTE
+Higher(cpm_max)    = HG_BYTE
+Highest(cpm_max)   = HS_BYTE
+'------------------compensation prepare----------------------------------------'
+dead_time          = DT
+c_factor  = dead_time / 1000000
+c_factor  = c_factor / 60
+
+'------------------set sound---------------------------------------------------'
+  if play_sound = 0x00 then
+   sound = 0
+   else
+   sound = 1
+  end if
+
+'-----------------CALCULATE ALARM FROM 8bit to 16bit---------------------------'
+ALARM = ALARM_L + ALARM_H*256
+CF2 = (CF * 1000)/877          ' Conversion constant from uSv to uRn
+
+'------------------START SOFTWARE SPI------------------------------------------'
+Chip_Select = 1
+Chip_Select_Direction = 0              ' Set CS# pin as Output
+Soft_SPI_Init()
+delay_ms(100)
+
+'------------------START NT DISPLAY--------------------------------------------'
+InitLCD()
+delay_ms(100)
+ClearLCD()
+Display_Logo()
+ByteToStr(vers, ver_disp)           ' firmware version display
+Text_LCD(55,7, ver_disp)
+Text_LCD(50,7, "2/")
+
+'------------------START UART AT 2400 BAUD-------------------------------------'
+
+Soft_UART_Init(PORTB, 2, 1, 2400, 1)  '  sub procedure Soft_UART_Init(dim byref port as byte, dim rx_pin, tx_pin, baud_rate, inverted as byte)
+delay_ms(2000)                        ' inverted data
+
+'------------------ASKING FOR ALERT SETTINGS-----------------------------------'
+STARTUEM:
+signalization()
+'------------------SHOW CURRENT PARAMENETR-------------------------------------'
+
+parameters()
+'------------------SET 16 BIT TIMER--------------------------------------------'
+MEASURE:
+
+  counts = 0
+  cpm = 0
+  timer_cnt = 0
+  cpm_read_done = 0
+
+  TMR1H = 0xE7                         ' First write higher byte to TMR1
+  TMR1L = 0x96                         ' Write lower byte to TMR1
+  T1CON = 0x35                         ' Timer1 prescaler settings
+
+  PIE1 = %00000001
+  TMR1IE_bit = 1                       ' Enable Timer1 overflow interrupt
+  TMR1IF_bit = 0
+
+
+'------------------ZEROING ARRAY-----------------------------------------------'
+  for xx = 0 to 11              ' 1 minute array                          '5
+   CX[xx] = 0
+  next xx
+
+  for xx = 0 to 63            ' 5 minutes array for graph    29
+   G_cpm[xx] = 0
+  next xx
+  G_cpm_max = 0
+'------------------PREPARE DISPLAY---------------------------------------------'
+ PRINT_LABELS:
+ if units = 0 then
+  printSV()
+  else
+  printRN()
+ end if
+
+ if sound = 1 then
+  Text_LCD (97, 0, "(")
+ end if
+ 
+ if becquerel = 0x01 then
+      MyText_LCD(17,0,"Bq")
+'      PositionLCD (17, 0)
+'      for nn = 0 to 10
+ '      Soft_SPI_Write (bqtoserial[nn])
+ '     next nn
+ end if
+
+ PositionLCD (0, 7)
+   for nn = 0 to 19
+   Soft_SPI_Write (cpm_label[nn])
+  next nn
+  if probe = 0x00 then
+   Text_LCD (122, 0, "!")        '78
+  else
+   MyText_LCD(103,0, " XLR")                 '103
+'   PositionLCD (107, 0)
+'   for nn = 0 to 14
+'    Soft_SPI_Write (exprobe[nn])
+'   next nn
+  end if
+  
+'------------------ALLOW INTERRUPTS NOW----------------------------------------'
+  cpm_read_done = 0
+  counts = 0
+  xx   = 0
+  G_xx = 0
+
+'-------------------SET TIMER 3------------------------------------------------'
+ TMR3ON_bit = 0                        ' stop timer
+ TMR3CS_bit = 0                        ' internal clock
+ T3CKPS0_bit = 0                       ' prescaler 1:1
+ T3CKPS1_bit = 0
+ RD16_bit    = 0                       ' 8 bit write
+ TMR3IE_bit  = 1                       ' enable TMR3 overflow interrupt
+ TMR3IF_bit  = 0
+ TMR3L = 0x00
+ TMR3H = 0x00
+'-------------------SET TIMER 0------------------------------------------------'
+  T0CON = %01001000                ' 8 bit timer 0
+  TMR0L      = timer_byte                                 '
+  TMR0IE_bit = 1
+  TMR0IF_bit = 0
+
+  IPEN_bit   = 1                        ' enable interrupt priority
+  TMR2IP_bit  = 0                       ' TMR2 low priority interrupt
+  TMR1IP_bit  = 1                       ' TMR1 high priority interrupt
+  TMR0IP_bit  = 1                       ' TMR0 high priority interrupt
+  RBPU_bit    = 1                       ' disable pull ups on RB port
+
+  INTCON = %11110000
+  INTEDG0_bit = 0                       ' Interrupt on RB0/INT pin is edge triggered, setting it on low edge
+
+'-----------------ENDLESS LOOP-------------------------------------------------'
+  while(1)
+
+      if button_check = 1 then
+              if alert = 0 then
+                LATB.7  = 0             ' turn off alert on portb.7 and wait for button
+                TRISB.7 = 1             ' input
+                  if Button (PORTB, 7, 100, 1) then
+                   ' LATA.2   = 1 ' light
+                     sound = not sound
+                     if sound = 1 then
+                       play_sound = 0x01
+                       Text_LCD (97, 0, "(")
+                       else
+                       play_sound = 0x00
+                       Text_LCD (97, 0, " ")
+                     end if
+                     delay_ms(100)
+                    EEPROM_Write(0x05, play_sound)
+                  end if
+              end if
+              
+              if Button (PORTB, 5, 100, 1) then
+               if smartBL = 0x01 then
+               LATA.2   = 1 ' light
+               else
+               LATA.2 = not LATA.2
+               end if
+              end if
+
+'              if Button (PORTB, 7, 100, 1) then
+'                LATA.2   = 1 ' light
+'                 sound = not sound
+'                 if sound = 1 then
+'                   play_sound = 0x01
+'                   Text_LCD (97, 0, "(")
+'                   else
+'                   play_sound = 0x00
+'                   Text_LCD (97, 0, " ")
+'                 end if
+'                 delay_ms(100)
+'                EEPROM_Write(0x05, play_sound)
+'              end if
+
+             if Button (PORTB, 6, 100, 1) then
+                delay_ms(1000)
+                 if PORTB.6 = 1 then
+                  calibration()
+                 else
+                  units = 1 - units
+                  EEPROM_Write (0x04, units)
+                  Text_LCD(0, 1, "              ")
+                  Text_LCD(0, 2, "              ")
+                  if units = 0 then
+                    printSV()
+                    else
+                    printRN()
+                  end if
+                 end if
+
+             end if
+             
+
+      button_check = 0
+     end if
+
+
+          if sek_over = 1 then
+          TMR1IE_bit = 0
+          LATA.5  = 0
+
+                  if probe = 0x00 then                  ' measure HV if no probe connected
+                      adc_rd = ADC_Read(1)              ' read HV
+                      tlong = adc_rd * 1.21             '1.21 for 1.25V ; 2.44 for 2.5V
+                      IntToStr (tlong, Dispv)
+                      ltrim (Dispv)
+                      Text_LCD (104, 0, Dispv)
+
+                      if sek_cnt <= 31 then
+                       timer_byte = p_one
+                      else
+                       timer_byte = p_two
+                      end if
+
+                      if sek_cnt >= 800 then
+                       timer_byte = p_tree
+                      end if
+
+                      if sek_cnt >=4000 then             ' 4200 control of podka4ka not to overdrive the HV!!
+                       timer_byte = p_four               ' reduce podka4ka to the minimum when CPM>250000
+                      end if
+                  end if
+                 
+                  PositionLCD (90,2)                  ' PositionLCD (25,3)
+                  if sek_cnt > ALARM then
+                    
+                    if smartBL=0x01 then
+                     LATA.2   = 1 ' light
+                    end if
+                    alert = 1
+                    TRISB.7 = 0          ' portb.7 output again
+                    LATB.7  = 1          ' turn alert on
+                    for hh = 0 to 34
+                    Soft_SPI_Write(message2[hh])
+                    next hh
+'                    ddata = 0
+'                    Soft_SPI_Write(REVERSE_D_ON)
+'                    ddata = 1
+                    else
+                     alert = 0
+
+                    for hh = 0 to 34
+                    Soft_SPI_Write(message1[hh])
+                    next hh
+                  end if
+
+
+                 sek_over = 0
+                 INT0IE_bit = 1
+                 TMR1IE_bit = 1
+          end if
+
+
+
+    if cpm_read_done = 1 then           ' When interrupt occur
+
+          TMR1IE_bit = 0
+          LATA.5  = 0
+
+        if n1 = 0 then                   'jjjjj
+            LATA.5  = 1                  ' podkachaem HV a vdrug u nas pizdec
+            delay_us(500)
+            LATA.5  = 0
+            delay_us(500)
+            LATA.5  = 1
+            delay_us(500)
+            LATA.5  = 0
+            n1 = 1
+            m_period = 99
+            'sekunds = 5
+            cpm = sek_cnt
+'            LATA.5  = 1                        ' Turn on podka4ka
+'            TMR0L   = 150 ' timer_byte               ' set timer
+'            T0CON = %11001000                  ' start timer
+            goto DD
+            else
+
+                  CX[xx]      = counts
+                  cpm_total   = cpm_total + counts
+                   if cpm_total>23000000 then     ' limit max absorbed cpm for One session
+                    cpm_total = 23000000
+                   end if
+                   
+                   xx = xx + 1
+                   if xx>11 then
+                      xx=0
+                   end if
+
+                  old_cpm = cpm
+                  cpm = CX[0] + CX[1] + CX[2] + CX[3] + CX[4] + CX[5] +  CX[6] + CX[7] + CX[8] + CX[9] + CX[10] + CX[11]
+
+
+                  if old_cpm >= cpm then
+                   parid_cpm = old_cpm - cpm
+                  else
+                   parid_cpm = cpm - old_cpm
+                  end if
+
+                    if parid_cpm >=50 then
+                      cpm = counts * 12                    '6
+                      for xx = 0 to 11
+                       CX[xx] = counts
+                      next xx
+                      xx = 0
+
+                     end if
+
+                  if cpm > cpm_max then        ' safe max cpm to eeprom if need
+                      cpm_max = cpm
+                      EEPROM_Write(0x0C, Lo(cpm))
+                      EEPROM_Write(0x0D, Hi(cpm))
+                      EEPROM_Write(0x0E, Higher(cpm))
+                      EEPROM_Write(0x0F, Highest(cpm))
+
+                  end if
+
+                  
+                  DD:
+'                   LongWordToStr (cpm, CPM_Display)
+'                   ltrim (CPM_Display)
+'                   sendcpm (CPM_Display)
+
+                  G_cpm_max   = cpm                  '
+                  for G_xx=0 to 62
+                    G_cpm[G_xx] = G_cpm[G_xx+1]
+                    if G_cpm[G_xx] >= G_cpm_max then
+                      G_cpm_max = G_cpm[G_xx]
+                    end if
+                  next G_xx
+                  G_cpm[63] = cpm
+                  stolbik()
+                  
+                   LongWordToStr (cpm, CPM_Display)
+                   ltrim (CPM_Display)
+                   sendcpm (CPM_Display)
+                   
+                  if becquerel = 0x01 then         ' send Bq to uart
+                       if cpm > BG+DL then
+                         dose_Bq     = (cpm - BG) / delitel
+                        else
+                         dose_Bq = DL*100 / delitel
+                         dose_Bq = dose_Bq / 100
+
+                       end if
+                       floattostr (dose_Bq, dose_Bq_txt)
+                       ltrim (dose_Bq_txt)
+
+                      sendBQ:
+                      Soft_UART_Write (32)
+                      sendcpm ("cpm, ")
+                      sendcpm (dose_Bq_txt)
+                      Soft_UART_Write (32)
+                      sendcpm ("Bq/cm")
+                      Soft_UART_Write (94)
+                      Soft_UART_Write (50)
+                      Soft_UART_Write (32)
+                  end if
+                  Soft_UART_Write (13)
+                      GIEH_bit = 1
+                      GIEL_bit = 1
+
+                   Text_LCD (20, 7, "          ")
+                   Text_LCD (20, 7, CPM_Display)
+                  
+                   cpm_compensated =  cpm / (1 - cpm * c_factor)
+                   cpm_compensated = floor(cpm_compensated)
+                   
+                      if units = 0 then
+                       dose = cpm_compensated * CF                  ' Convert CPM to uSv/h
+                       dosextract()
+                       else
+                       dose = cpm_compensated * CF2                 ' Convert CPM to uRn/h
+                       dosextract2()
+                      end if
+
+                      dose = cpm_total* CF              ' print absorbed dose
+                      dose = dose div 60
+                      dosextract3()
+
+
+                  m_period = 99                         '5 seconds period
+                  'sekunds = 5
+
+                   if alert = 0 then
+                    if smartBL = 0x01 then
+                     LATA.2   = 0 ' light
+                    end if
+                    LATB.7  = 0          ' turn alert off
+                    'TRISB.7 = 1          ' portb.7 input again
+                    
+'                    ddata = 0
+'                    Soft_SPI_Write(REVERSE_D_OFF)
+'                    ddata = 1
+                   end if
+
+
+
+         end if
+
+
+                if PORTE = 0 then
+                    batlong = ADC_Read(0)           ' read BAT voltage
+                    if batlong <= 677 then      '3.3V
+                     Text_LCD(0, 0, "$")       'BATT 25%
+                     Text_LCD(5, 0, "#")
+                    else
+                     Text_LCD(0, 0, "-")       'BATT 50%
+                     Text_LCD(5, 0, "#")
+                    end if
+
+                    if batlong >= 799 then      '3.9V
+                      Text_LCD(0, 0, "-")       'BATT 100%
+                      Text_LCD(5, 0, ".")
+                    end if
+                    for nn = 0 to 5
+                     Soft_SPI_Write(0x00)
+                    next nn
+                     if batlong <=615 then     '750mV / 1.22    3.00V bat cut off
+                      delay_ms(100)
+                      batlong = ADC_Read(0)           ' read BAT voltage again
+                      if batlong <=615 then
+                           halt_system()
+                      end if
+                     end if
+                 else
+                    PositionLCD(0,0)
+                    for nn = 0 to 15
+                     Soft_SPI_Write (plug[nn])
+                    next nn
+                 end if
+                 
+
+                 
+
+
+          cpm_read_done = 0
+          'INT0IE_bit = 1
+          TMR1IE_bit = 1
+    end if
+
+  wend
+end.
